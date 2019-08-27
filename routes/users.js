@@ -4,8 +4,13 @@ var users = require('../resources/users_db')
 
 /* GET users listing. */
 router.post('/create', function (req, res, next) {
-  let {username, publickkey} = req.body
-  users.saveUserAndPubKey(username, publickkey).then((resp) => res.send(resp)).catch((err) => console.log(err))
+  let {username, publicKey} = req.body
+  publicKey = publicKey.replace(/\\n/g,"\n") //TODO: find new way without RegEx
+
+  console.log({publicKey});
+  
+  
+  users.saveUserAndPubKey(username, publicKey).then((resp) => res.send(resp)).catch((err) => console.log(err))
 });
 
 router.post('/confirm', function (req, res, next) {

@@ -3,7 +3,7 @@ var crypto = require("crypto")
 const sign = crypto.createSign('SHA256');
 const verify = crypto.createVerify('SHA256');
 
-var masteKey = ""
+var masterKey = ""
 
 async function saveUserAndPubKey(user, pub) {
   ` accepted
@@ -21,6 +21,8 @@ async function saveUserAndPubKey(user, pub) {
 
 
   return new Promise(function (resolve, reject) {
+    
+    
 
     let randomBytes = crypto.randomBytes(20).toString('hex');
 
@@ -30,10 +32,9 @@ async function saveUserAndPubKey(user, pub) {
       global.conn.collection("users").findOne({
         "user": user
       }).then((resp_user) => {
-        let user = resp_user
 
 
-        if (user == null) {
+        if (resp_user == null) {
           global.conn.collection("users").insertOne({
             "user": user,
             "pubKey": pub,
@@ -78,7 +79,8 @@ async function confirmKey(user, signature) {
 
 
 
-
+    console.log({user, signature});
+    
     if (user != undefined && signature != undefined) {
 
       global.conn.collection("users").findOne({
@@ -89,28 +91,34 @@ async function confirmKey(user, signature) {
 
         if (user != null) {
 
-
-
+          const verify = crypto.createVerify('SHA256'); //TODO: initializate in a better way
+          
           verify.update(user.randomMem);
           verify.end();
 
+          console.log(user);
+          
 
-          sign.write(user.randomMem);
-          sign.end();
-          let signature = sign.sign(privateKey, 'hex');
 
-          if (verify.verify(user.pub, signature, 'hex')) {
+          if (verify.verify(user.pubKey, signature, 'hex')) {
             global.conn.collection("users").update({
-              "user": user
-            }, {
-              $set: {
-                "confirmated": true
+              "user": user.user
+            }, { $set: { "randomMem": "", "confirmated" : true } }, { upsert: true 
+            }).then(data => {
+              if (data.result.nModified){
+                resolve({
+                  "status": "success",
+                  "data": "confirmed"
+                })
+              } else {
+                resolve({
+                  "status": "error",
+                  "data": "unknown"
+                })
               }
+              
             })
-            resolve({
-              "status": "esuccess",
-              "data": "confirmed"
-            })
+            
           } else {
             let randomBytes = crypto.randomBytes(20).toString('hex');
             global.conn.collection("users").update({
@@ -144,9 +152,11 @@ async function confirmKey(user, signature) {
 
 
       }).catch((err => {
+        console.log(err);
+        
         resolve({
           "status": "error",
-          "data": "REGISTRATIONEEDED"
+          "data": err
         })
 
       }))
@@ -175,17 +185,24 @@ async function listUsers(user) {
         })
       })
     } else {
-      global.conn.collection("users").find().limit(100).toArray(function(err, result) {
+      global.conn.collection("users").find({}).limit(100).toArray(function(err, result) {
         if (err) throw err;
+
+        console.log(result);
+        
+
         users = []
-        for (let i in result ){
-          users.push({"user":i.user, "publicKey":i.pubKey})
+        for (let i in result){
+          
+          users.push({"user":result[i].user, "publicKey":result[i].pubKey})
+
         }
+        
         resolve({
-          "status": "esuccess",
+          "status": "success",
           "data": users
         })
-        db.close();
+        
       })
     }
     
@@ -213,7 +230,7 @@ async function genUserKey(mKey) {
       }
     });
 
-    if (masteKey != "" && masteKey == mKey) {
+    if (masterKey != "" && masterKey == mKey) {
       resolve({
         "status": "success",
         "data": {
@@ -237,8 +254,8 @@ async function getMasterKey() {
 
   return new Promise(function (resolve, reject) {
 
-    if (masteKey == "") {
-      masteKey = crypto.randomBytes(20).toString('hex');
+    if (masterKey == "") {
+      masterKey = crypto.randomBytes(20).toString('hex');
       console.log(masterKey);
       resolve({
         "status": "success",
