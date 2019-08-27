@@ -6,20 +6,16 @@ var wss;
 async function init(server) {
 
     return new Promise(function (resolve, reject) {
-        //console.log("server0", server);
-        
+
         wss = new WebSocket.Server({ server });
         console.log(wss == undefined);
 
-        //console.log(wss);
-        
         if (wss!=undefined){
             wss.on('connection', (ws) => {
 
-                //connection is up, let's add a simple simple event
                 ws.on('message', (message) => {
             
-                    //log the received message and send it back to the client
+
                     console.log('received: %s', message);
                     ws.send(`received -> ${message}`);
 
@@ -46,7 +42,7 @@ async function init(server) {
                     }
                     
                 });
-                //send immediatly a feedback to the incoming connection    
+
                 ws.send('Connection established');
 
                 

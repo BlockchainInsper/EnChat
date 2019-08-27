@@ -6,19 +6,6 @@ const verify = crypto.createVerify('SHA256');
 var masterKey = ""
 
 async function saveUserAndPubKey(user, pub) {
-  ` accepted
-
-    -----BEGIN PRIVATE KEY-----
-    MH4CAQAwEAYHKoZIzj0CAQYFK4EEAAMEZzBlAgEBBB4PSuLa52aZefrQKb1hdVkp
-    p/UFQEa2xwMFbWTg1HShQAM+AARZ3TSstpTxGVabC8WMn02d+e5D7VnfxERI1iwM
-    GrB5bmDqh1nlPO8jJl33/ynvszf/V3+L1b69wj1OJn8=
-    -----END PRIVATE KEY-----
-
-    -----BEGIN PUBLIC KEY-----
-    MFIwEAYHKoZIzj0CAQYFK4EEAAMDPgAEWd00rLaU8RlWmwvFjJ9NnfnuQ+1Z38RE
-    SNYsDBqweW5g6odZ5TzvIyZd9/8p77M3/1d/i9W+vcI9TiZ/
-    -----END PUBLIC KEY-----`
-
 
   return new Promise(function (resolve, reject) {
     
