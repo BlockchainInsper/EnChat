@@ -10,12 +10,32 @@ router.post('/create', function (req, res, next) {
   console.log({publicKey});
   
   
-  users.saveUserAndPubKey(username, publicKey).then((resp) => res.send(resp)).catch((err) => console.log(err))
+  users.saveUserAndPubKey(username, publicKey).then((resp) => {
+
+    if (resp.status == 'success') {
+      res.render('authentication', {qs: req.query})
+    } else {
+      res.render('fail', {qs: req.query})
+    }
+
+
+  
+  }).catch((err) => console.log(err))
 });
 
 router.post('/confirm', function (req, res, next) {
   let {username, signature} = req.body
-  users.confirmKey(username, signature).then((resp) => res.send(resp)).catch((err) => console.log(err))
+  users.confirmKey(username, signature).then((resp) => {
+
+    if (resp.status == 'success') {
+      res.render('chat', {qs: req.query})
+    } else {
+      res.render('fail', {qs: req.query})
+    }
+    
+
+
+  }).catch((err) => console.log(err))
 });
 
 router.post('/generate', function (req, res, next) {
@@ -25,8 +45,8 @@ router.post('/generate', function (req, res, next) {
 });
 
 
-router.get('/', function (req, res, next) {
-  res.send("pls, send data")
+router.get('/create', function (req, res, next) {
+  res.render('index', {qs: req.query})
 });
 
 router.get('/list', function (req, res, next) {

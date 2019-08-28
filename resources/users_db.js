@@ -26,7 +26,7 @@ async function saveUserAndPubKey(user, pub) {
             "user": user,
             "pubKey": pub,
             "confirmated": false,
-            "randomMem": randomBytes
+            "randomMem": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sapien lacus, elementum pretium consequat ac, tempus nec eros" //TODO: Make it random
           })
           resolve({
             "status": "success",
@@ -109,10 +109,10 @@ async function confirmKey(user, signature) {
           } else {
             let randomBytes = crypto.randomBytes(20).toString('hex');
             global.conn.collection("users").update({
-              "user": user
+              "user": user.user
             }, {
               $set: {
-                "randomMem": randomBytes
+                "randomMem": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sapien lacus, elementum pretium consequat ac, tempus nec eros" //TODO: Make it random
               }
             })
             resolve({
