@@ -65,8 +65,6 @@ async function confirmKey(user, signature) {
   return new Promise(function (resolve, reject) {
 
 
-
-    console.log({user, signature});
     
     if (user != undefined && signature != undefined) {
 
@@ -83,7 +81,6 @@ async function confirmKey(user, signature) {
           verify.update(user.randomMem);
           verify.end();
 
-          console.log(user);
           
 
 
@@ -175,7 +172,6 @@ async function listUsers(user) {
       global.conn.collection("users").find({}).limit(100).toArray(function(err, result) {
         if (err) throw err;
 
-        console.log(result);
         
 
         users = []

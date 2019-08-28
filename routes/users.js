@@ -7,15 +7,14 @@ router.post('/create', function (req, res, next) {
   let {username, publicKey} = req.body
   publicKey = publicKey.replace(/\\n/g,"\n") //TODO: find new way without RegEx
 
-  console.log({publicKey});
   
   
   users.saveUserAndPubKey(username, publicKey).then((resp) => {
 
     if (resp.status == 'success') {
-      res.render('authentication', {qs: req.query})
+      res.render('authentication.html')
     } else {
-      res.render('fail', {qs: req.query})
+      res.render('fail.html')
     }
 
 
@@ -28,9 +27,9 @@ router.post('/confirm', function (req, res, next) {
   users.confirmKey(username, signature).then((resp) => {
 
     if (resp.status == 'success') {
-      res.render('chat', {qs: req.query})
+      res.render('chat.html')
     } else {
-      res.render('fail', {qs: req.query})
+      res.render('fail.html')
     }
     
 
@@ -46,7 +45,7 @@ router.post('/generate', function (req, res, next) {
 
 
 router.get('/create', function (req, res, next) {
-  res.render('index', {qs: req.query})
+  res.render('index.html')
 });
 
 router.get('/list', function (req, res, next) {

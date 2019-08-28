@@ -1,54 +1,52 @@
-const WebSocket = require('ws');
 var wss;
 
 
 
 async function init(server) {
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
 
-        wss = new WebSocket.Server({ server });
-        console.log(wss == undefined);
+        const WebSocket = require('ws');
 
-        if (wss!=undefined){
+        
+
+        wss = new WebSocket.Server({server});
+
+       // wss = new WebSocket.Server({ port: 3001, origin: 'https://localhost:3000' });
+
+
+        
+
+        if (wss != undefined) {
+
+
             wss.on('connection', (ws) => {
 
-                ws.on('message', (message) => {
-            
+                ws.isAlive = true;
 
-                    console.log('received: %s', message);
-                    ws.send(`received -> ${message}`);
-
-                    ws.isAlive = true;
-
-                    
-
-                    
-
-                });
                 ws.on('pong', () => {
                     ws.isAlive = true;
                 });
-    
-    
-                ws.on('chatMessage', (message) => {
-                    if (message.msg!=undefined && message.user!=undefined){
-                        //TODO salvar no database 
-                        wss.clients.forEach(function each(client) {
-                            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                              client.send(message);
-                            }
+
+                ws.on('message', (message) => { 
+                    
+                    try {
+                        let msg = JSON.parse(message)
+                        //TODO:save in database(?) test if user exist and if signature is right
+                        wss.clients
+                        .forEach(client => {
+                            if (client == ws) {
+                                client.send(`{"data":${message}}`);
+
+                            }    
                         });
+                    } catch (error) {
+                        console.log(error, message);
                     }
                     
-                });
-
-                ws.send('Connection established');
-
-                
+                    
+                })
             });
-
-            
 
             setInterval(() => {
                 wss.clients.forEach((ws) => {
@@ -61,17 +59,20 @@ async function init(server) {
             }, 10000);
 
 
+            
+
+
             resolve("WSS CONFIGURATION DONE")
         } else {
             reject("WSS NOT STARTED")
         }
-        
-  
-  
-  
+
+
+
+
     })
-  }
+}
 
 
 
-  module.exports = {wss, init}
+module.exports = { wss, init }
