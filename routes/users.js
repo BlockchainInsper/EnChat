@@ -6,17 +6,15 @@ var users = require('../resources/users_db')
 router.post('/create', function (req, res, next) {
   let {username, publicKey} = req.body
   publicKey = publicKey.replace(/\\n/g,"\n") //TODO: find new way without RegEx
-
-  
+  usernameValue = req.body.username;
   
   users.saveUserAndPubKey(username, publicKey).then((resp) => {
 
     if (resp.status == 'success') {
-      res.render('authentication.html')
+      res.render('authentication.html', {randomVar: resp.data.randomMsg, usernameValue})
     } else {
       res.render('fail.html')
     }
-
 
   
   }).catch((err) => console.log(err))

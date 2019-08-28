@@ -40,13 +40,13 @@
 					<div class="wrap-input100 validate-input m-b-20">
 						<span class="btn-show-pass">
 						</span>
-						<p class="TextBox100" type="text" name="encrypted"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sapien lacus, elementum pretium consequat ac, tempus nec eros. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam porttitor nec enim ut congue. Mauris vel sagittis nulla, ut laoreet purus. Duis at hendrerit ante. Vestibulum ut tincidunt erat, ac sagittis justo. Sed consectetur lorem vitae libero malesuada mollis.
+						<p class="TextBox100" type="text" value='<%= randomVar %>' name="encrypted">
 						</p>
 						
 					</div>
 
 					<div class="wrap-input100 validate-input m-b-16">
-						<input class="input200" type="text" name="username" placeholder="Username again">
+						<input class="input200" type="hidden" value="<%= usernameValue %>" name="username" placeholder="Username again">
 						<input class="input200" type="text" name="signature" placeholder="Encrypted message">
 						<span class="focus-input100"></span>
 					</div>

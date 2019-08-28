@@ -12,10 +12,6 @@ async function init(server) {
 
         wss = new WebSocket.Server({server});
 
-       // wss = new WebSocket.Server({ port: 3001, origin: 'https://localhost:3000' });
-
-
-        
 
         if (wss != undefined) {
 

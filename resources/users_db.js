@@ -8,11 +8,7 @@ var masterKey = ""
 async function saveUserAndPubKey(user, pub) {
 
   return new Promise(function (resolve, reject) {
-    
-    
-
     let randomBytes = crypto.randomBytes(20).toString('hex');
-
 
     if (user != undefined && pub != undefined) {
 
@@ -26,11 +22,14 @@ async function saveUserAndPubKey(user, pub) {
             "user": user,
             "pubKey": pub,
             "confirmated": false,
-            "randomMem": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sapien lacus, elementum pretium consequat ac, tempus nec eros" //TODO: Make it random
+            "randomMem": randomBytes
           })
           resolve({
             "status": "success",
-            "data": "NEEDCONFIRMATION"
+            "data": {
+              "randomMsg": randomBytes,
+              "user":user
+            }
           })
 
         } else {
@@ -81,9 +80,6 @@ async function confirmKey(user, signature) {
           verify.update(user.randomMem);
           verify.end();
 
-          
-
-
           if (verify.verify(user.pubKey, signature, 'hex')) {
             global.conn.collection("users").update({
               "user": user.user
@@ -104,28 +100,11 @@ async function confirmKey(user, signature) {
             })
             
           } else {
-            let randomBytes = crypto.randomBytes(20).toString('hex');
-            global.conn.collection("users").update({
+            global.conn.collection("users").deleteOne({
               "user": user.user
-            }, {
-              $set: {
-                "randomMem": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sapien lacus, elementum pretium consequat ac, tempus nec eros" //TODO: Make it random
-              }
-            })
-            resolve({
-              "status": "error",
-              "data": {
-                "code": "WRONGCONFIMATION",
-                "expected": signature
-              }
+
             })
           }
-
-
-
-
-
-
 
         } else {
           resolve({
@@ -133,7 +112,6 @@ async function confirmKey(user, signature) {
             "data": "REGISTRATIONEEDED"
           })
         }
-
 
       }).catch((err => {
         console.log(err);
@@ -144,7 +122,6 @@ async function confirmKey(user, signature) {
         })
 
       }))
-
 
     } else {
       reject({
@@ -168,11 +145,10 @@ async function listUsers(user) {
           "data": resp_user.pubKey
         })
       })
+
     } else {
       global.conn.collection("users").find({}).limit(100).toArray(function(err, result) {
         if (err) throw err;
-
-        
 
         users = []
         for (let i in result){
@@ -189,7 +165,6 @@ async function listUsers(user) {
       })
     }
     
-
 
 
   })
