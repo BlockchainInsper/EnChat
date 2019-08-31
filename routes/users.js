@@ -11,9 +11,13 @@ router.post('/create', function (req, res, next) {
   users.saveUserAndPubKey(username, publicKey).then((resp) => {
 
     if (resp.status == 'success') {
-      res.render('authentication.html', {randomVar: resp.data.randomMsg, usernameValue})
+      console.log(resp.data);
+      console.log(resp.data.randomMsg);
+      
+      
+      res.render('authentication', {randomVar: resp.data.randomMsg, usernameValue})
     } else {
-      res.render('fail.html')
+      res.render('fail')
     }
 
   
@@ -25,9 +29,9 @@ router.post('/confirm', function (req, res, next) {
   users.confirmKey(username, signature).then((resp) => {
 
     if (resp.status == 'success') {
-      res.render('chat.html')
+      res.render('chat')
     } else {
-      res.render('fail.html')
+      res.render('fail')
     }
     
 
@@ -43,7 +47,7 @@ router.post('/generate', function (req, res, next) {
 
 
 router.get('/create', function (req, res, next) {
-  res.render('index.html')
+  res.render('index')
 });
 
 router.get('/list', function (req, res, next) {
